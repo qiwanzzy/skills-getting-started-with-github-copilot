@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+  const statsList = document.getElementById("stats-list");
 
   // Function to fetch activities from API
   async function fetchActivities() {
@@ -42,6 +43,33 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
+    }
+  }
+
+  // Function to fetch activity statistics
+  async function fetchStatistics() {
+    try {
+      const response = await fetch("/activities/stats");
+      const stats = await response.json();
+
+      // Clear loading message
+      statsList.innerHTML = "";
+
+      // Populate statistics list
+      stats.forEach(stat => {
+        const statsCard = document.createElement("div");
+        statsCard.className = "stats-card";
+
+        statsCard.innerHTML = `
+          <h4>${stat.activity}</h4>
+          <p><strong>Total Participants:</strong> ${stat.totalParticipants}</p>
+        `;
+
+        statsList.appendChild(statsCard);
+      });
+    } catch (error) {
+      statsList.innerHTML = "<p>Failed to load statistics. Please try again later.</p>";
+      console.error("Error fetching statistics:", error);
     }
   }
 
@@ -87,4 +115,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize app
   fetchActivities();
+  fetchStatistics();
 });
